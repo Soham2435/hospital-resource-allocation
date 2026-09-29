@@ -2,19 +2,86 @@ import { useState } from "react"
 import Dashboard from "./pages/Dashboard"
 import Patients from "./pages/Patients"
 import Rooms from "./pages/Rooms"
+import Allocation from "./pages/Allocation"
+
+const initialRooms = [
+  {
+    id: "G101",
+    room_type: "general",
+    capacity: 1,
+    isolation: false,
+    available: true,
+  },
+  {
+    id: "G102",
+    room_type: "general",
+    capacity: 1,
+    isolation: false,
+    available: true,
+  },
+  {
+    id: "G103",
+    room_type: "general",
+    capacity: 1,
+    isolation: false,
+    available: true,
+  },
+  {
+    id: "G104",
+    room_type: "general",
+    capacity: 1,
+    isolation: false,
+    available: true,
+  },
+  {
+    id: "P201",
+    room_type: "private",
+    capacity: 1,
+    isolation: false,
+    available: true,
+  },
+  {
+    id: "P202",
+    room_type: "private",
+    capacity: 1,
+    isolation: false,
+    available: true,
+  },
+  {
+    id: "I301",
+    room_type: "icu",
+    capacity: 1,
+    isolation: true,
+    available: true,
+  },
+  {
+    id: "I302",
+    room_type: "icu",
+    capacity: 1,
+    isolation: true,
+    available: true,
+  },
+]
 
 const navigation = [
   "Dashboard",
   "Patients",
-  "Rooms",
+  "Rooms & Beds",
   "Allocation",
   "History",
 ]
 
 function App() {
-  const [activePage, setActivePage] = useState("Dashboard")
+  const [activePage, setActivePage] =
+    useState("Dashboard")
+
   const [patients, setPatients] = useState([])
-  const [rooms, setRooms] = useState([])
+
+  const [rooms, setRooms] =
+    useState(initialRooms)
+
+  const [allocationResult, setAllocationResult] =
+    useState(null)
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -46,11 +113,10 @@ function App() {
               <button
                 key={item}
                 onClick={() => setActivePage(item)}
-                className={`w-full rounded-lg px-4 py-2.5 text-left text-sm font-medium transition ${
-                  activePage === item
-                    ? "bg-slate-900 text-white"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                }`}
+                className={`w-full rounded-lg px-4 py-2.5 text-left text-sm font-medium transition ${activePage === item
+                  ? "bg-slate-900 text-white"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  }`}
               >
                 {item}
               </button>
@@ -74,7 +140,7 @@ function App() {
             />
           )}
 
-          {activePage === "Rooms" && (
+          {activePage === "Rooms & Beds" && (
             <Rooms
               rooms={rooms}
               setRooms={setRooms}
@@ -82,9 +148,13 @@ function App() {
           )}
 
           {activePage === "Allocation" && (
-            <PagePlaceholder
-              title="AI Allocation"
-              description="Run the CSP and backtracking allocation engine."
+            <Allocation
+              patients={patients}
+              rooms={rooms}
+              setPatients={setPatients}
+              setRooms={setRooms}
+              allocationResult={allocationResult}
+              setAllocationResult={setAllocationResult}
             />
           )}
 
