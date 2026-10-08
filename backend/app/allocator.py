@@ -79,7 +79,11 @@ class CSPAllocator:
 
         return min(
             unassigned,
-            key=lambda patient: len(self.domains[patient.id])
+            key=lambda patient: (
+                len(self.domains[patient.id]),
+                -patient.priority,
+                patient.id
+            )
         )
 
     def forward_check(self, assigned_room_id: str) -> bool:
