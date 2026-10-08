@@ -9,6 +9,7 @@ function Allocation({
   setRooms,
   allocationResult,
   setAllocationResult,
+  setAllocationHistory,
 }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -70,15 +71,24 @@ function Allocation({
         const allocatedPatientIds = new Set(
           Object.keys(data.allocations)
         )
+        const historyRecord = {
+          id: `RUN-${Date.now()}`,
+          timestamp: new Date().toLocaleString(),
+          allocations: data.allocations,
+        }
 
+        setAllocationHistory((current) => [
+          historyRecord,
+          ...current,
+        ])
         // Mark allocated resources as occupied.
         setRooms((current) =>
           current.map((room) =>
             allocatedRoomIds.has(room.id)
               ? {
-                  ...room,
-                  available: false,
-                }
+                ...room,
+                available: false,
+              }
               : room
           )
         )
@@ -95,7 +105,7 @@ function Allocation({
     } catch (requestError) {
       setError(
         requestError.message ||
-          "Unable to connect to the allocation server."
+        "Unable to connect to the allocation server."
       )
     } finally {
       setLoading(false)
@@ -136,11 +146,10 @@ function Allocation({
 
             {allocationResult && (
               <span
-                className={`rounded-full px-3 py-1 text-xs font-medium ${
-                  isAllocated
+                className={`rounded-full px-3 py-1 text-xs font-medium ${isAllocated
                     ? "bg-emerald-50 text-emerald-700"
                     : "bg-red-50 text-red-700"
-                }`}
+                  }`}
               >
                 {isAllocated
                   ? "Allocation Successful"
@@ -197,25 +206,25 @@ function Allocation({
                     {allocationResult.explanations?.[
                       patientId
                     ] && (
-                      <div className="mt-4 border-t border-slate-100 pt-3">
-                        <p className="text-xs font-medium text-slate-500">
-                          Why this allocation is valid
-                        </p>
+                        <div className="mt-4 border-t border-slate-100 pt-3">
+                          <p className="text-xs font-medium text-slate-500">
+                            Why this allocation is valid
+                          </p>
 
-                        <ul className="mt-2 space-y-1">
-                          {allocationResult.explanations[
-                            patientId
-                          ].map((reason) => (
-                            <li
-                              key={reason}
-                              className="text-xs text-slate-600"
-                            >
-                              ✓ {reason}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                          <ul className="mt-2 space-y-1">
+                            {allocationResult.explanations[
+                              patientId
+                            ].map((reason) => (
+                              <li
+                                key={reason}
+                                className="text-xs text-slate-600"
+                              >
+                                ✓ {reason}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                   </div>
                 ))}
               </div>

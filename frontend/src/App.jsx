@@ -3,6 +3,7 @@ import Dashboard from "./pages/Dashboard"
 import Patients from "./pages/Patients"
 import Rooms from "./pages/Rooms"
 import Allocation from "./pages/Allocation"
+import History from "./pages/History"
 
 const initialRooms = [
   {
@@ -82,7 +83,8 @@ function App() {
 
   const [allocationResult, setAllocationResult] =
     useState(null)
-
+  const [allocationHistory, setAllocationHistory] =
+    useState([])
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       {/* Header */}
@@ -155,13 +157,13 @@ function App() {
               setRooms={setRooms}
               allocationResult={allocationResult}
               setAllocationResult={setAllocationResult}
+              setAllocationHistory={setAllocationHistory}
             />
           )}
 
           {activePage === "History" && (
-            <PagePlaceholder
-              title="Allocation History"
-              description="View previously completed allocation runs."
+            <History
+              allocationHistory={allocationHistory}
             />
           )}
         </main>
